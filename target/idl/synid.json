@@ -1,0 +1,325 @@
+{
+  "version": "0.1.0",
+  "name": "synid",
+  "instructions": [
+    {
+      "name": "initialize",
+      "accounts": [
+        { "name": "config", "isMut": true, "isSigner": false },
+        { "name": "authority", "isMut": true, "isSigner": true },
+        { "name": "treasury", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "mintPrice", "type": "u64" }, { "name": "accessFee", "type": "u64" }]
+    },
+    {
+      "name": "updateConfig",
+      "accounts": [
+        { "name": "config", "isMut": true, "isSigner": false },
+        { "name": "authority", "isMut": false, "isSigner": true }
+      ],
+      "args": [
+        { "name": "mintPrice", "type": { "option": "u64" } },
+        { "name": "accessFee", "type": { "option": "u64" } },
+        { "name": "paused", "type": { "option": "bool" } }
+      ]
+    },
+    {
+      "name": "mintSynid",
+      "accounts": [
+        { "name": "config", "isMut": true, "isSigner": false },
+        { "name": "synid", "isMut": true, "isSigner": false },
+        { "name": "mint", "isMut": true, "isSigner": true },
+        { "name": "tokenAccount", "isMut": true, "isSigner": false },
+        { "name": "mintAuthority", "isMut": false, "isSigner": false },
+        { "name": "metadata", "isMut": true, "isSigner": false },
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "treasury", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "associatedTokenProgram", "isMut": false, "isSigner": false },
+        { "name": "metadataProgram", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false },
+        { "name": "rent", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "name", "type": "string" },
+        { "name": "uri", "type": "string" },
+        { "name": "encryptedCid", "type": "string" },
+        { "name": "encryptionKeyHash", "type": { "array": ["u8", 32] } }
+      ]
+    },
+    {
+      "name": "updateProfile",
+      "accounts": [
+        { "name": "synid", "isMut": true, "isSigner": false },
+        { "name": "owner", "isMut": false, "isSigner": true }
+      ],
+      "args": [
+        { "name": "encryptedCid", "type": { "option": "string" } },
+        { "name": "encryptionKeyHash", "type": { "option": { "array": ["u8", 32] } } }
+      ]
+    },
+    {
+      "name": "requestAccess",
+      "accounts": [
+        { "name": "config", "isMut": false, "isSigner": false },
+        { "name": "synid", "isMut": false, "isSigner": false },
+        { "name": "accessRequest", "isMut": true, "isSigner": false },
+        { "name": "escrow", "isMut": true, "isSigner": false },
+        { "name": "requester", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "fields", "type": { "vec": "string" } },
+        { "name": "offeredPayment", "type": "u64" },
+        { "name": "expiresAt", "type": "i64" }
+      ]
+    },
+    {
+      "name": "approveAccess",
+      "accounts": [
+        { "name": "config", "isMut": false, "isSigner": false },
+        { "name": "synid", "isMut": true, "isSigner": false },
+        { "name": "accessRequest", "isMut": true, "isSigner": false },
+        { "name": "accessGrant", "isMut": true, "isSigner": false },
+        { "name": "escrow", "isMut": true, "isSigner": false },
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "treasury", "isMut": true, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "denyAccess",
+      "accounts": [
+        { "name": "synid", "isMut": false, "isSigner": false },
+        { "name": "accessRequest", "isMut": true, "isSigner": false },
+        { "name": "escrow", "isMut": true, "isSigner": false },
+        { "name": "requester", "isMut": true, "isSigner": false },
+        { "name": "owner", "isMut": false, "isSigner": true }
+      ],
+      "args": []
+    },
+    {
+      "name": "revokeAccess",
+      "accounts": [
+        { "name": "synid", "isMut": false, "isSigner": false },
+        { "name": "accessGrant", "isMut": true, "isSigner": false },
+        { "name": "owner", "isMut": false, "isSigner": true }
+      ],
+      "args": []
+    },
+    {
+      "name": "verifyIdentity",
+      "accounts": [
+        { "name": "config", "isMut": false, "isSigner": false },
+        { "name": "synid", "isMut": true, "isSigner": false },
+        { "name": "authority", "isMut": false, "isSigner": true }
+      ],
+      "args": []
+    },
+    {
+      "name": "updateReputation",
+      "accounts": [
+        { "name": "config", "isMut": false, "isSigner": false },
+        { "name": "synid", "isMut": true, "isSigner": false },
+        { "name": "authority", "isMut": false, "isSigner": true }
+      ],
+      "args": [{ "name": "delta", "type": "i16" }]
+    },
+    {
+      "name": "burnSynid",
+      "accounts": [
+        { "name": "synid", "isMut": true, "isSigner": false },
+        { "name": "mint", "isMut": true, "isSigner": false },
+        { "name": "tokenAccount", "isMut": true, "isSigner": false },
+        { "name": "mintAuthority", "isMut": false, "isSigner": false },
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdrawTreasury",
+      "accounts": [
+        { "name": "config", "isMut": false, "isSigner": false },
+        { "name": "treasury", "isMut": true, "isSigner": false },
+        { "name": "authority", "isMut": true, "isSigner": true }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "authority", "type": "publicKey" },
+          { "name": "mintCount", "type": "u64" },
+          { "name": "mintPrice", "type": "u64" },
+          { "name": "accessFee", "type": "u64" },
+          { "name": "treasury", "type": "publicKey" },
+          { "name": "paused", "type": "bool" },
+          { "name": "totalRevenue", "type": "u64" },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "SynidAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "owner", "type": "publicKey" },
+          { "name": "mint", "type": "publicKey" },
+          { "name": "encryptedCid", "type": "string" },
+          { "name": "encryptionKeyHash", "type": { "array": ["u8", 32] } },
+          { "name": "createdAt", "type": "i64" },
+          { "name": "updatedAt", "type": "i64" },
+          { "name": "tokenId", "type": "u64" },
+          { "name": "soulbound", "type": "bool" },
+          { "name": "accessCount", "type": "u64" },
+          { "name": "totalEarnings", "type": "u64" },
+          { "name": "reputationScore", "type": "u16" },
+          { "name": "verified", "type": "bool" },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "AccessRequest",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "synid", "type": "publicKey" },
+          { "name": "requester", "type": "publicKey" },
+          { "name": "fields", "type": { "vec": "string" } },
+          { "name": "offeredPayment", "type": "u64" },
+          { "name": "createdAt", "type": "i64" },
+          { "name": "expiresAt", "type": "i64" },
+          { "name": "status", "type": { "defined": "AccessStatus" } },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "AccessGrant",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "synid", "type": "publicKey" },
+          { "name": "requester", "type": "publicKey" },
+          { "name": "fields", "type": { "vec": "string" } },
+          { "name": "payment", "type": "u64" },
+          { "name": "grantedAt", "type": "i64" },
+          { "name": "expiresAt", "type": "i64" },
+          { "name": "active", "type": "bool" },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "AccessStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [{ "name": "Pending" }, { "name": "Approved" }, { "name": "Denied" }, { "name": "Expired" }]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "SynidMinted",
+      "fields": [
+        { "name": "owner", "type": "publicKey", "index": true },
+        { "name": "mint", "type": "publicKey", "index": false },
+        { "name": "tokenId", "type": "u64", "index": false },
+        { "name": "timestamp", "type": "i64", "index": false }
+      ]
+    },
+    {
+      "name": "ProfileUpdated",
+      "fields": [
+        { "name": "owner", "type": "publicKey", "index": true },
+        { "name": "timestamp", "type": "i64", "index": false }
+      ]
+    },
+    {
+      "name": "AccessRequested",
+      "fields": [
+        { "name": "synid", "type": "publicKey", "index": true },
+        { "name": "requester", "type": "publicKey", "index": true },
+        { "name": "fields", "type": { "vec": "string" }, "index": false },
+        { "name": "payment", "type": "u64", "index": false },
+        { "name": "timestamp", "type": "i64", "index": false }
+      ]
+    },
+    {
+      "name": "AccessApproved",
+      "fields": [
+        { "name": "synid", "type": "publicKey", "index": true },
+        { "name": "requester", "type": "publicKey", "index": true },
+        { "name": "payment", "type": "u64", "index": false },
+        { "name": "timestamp", "type": "i64", "index": false }
+      ]
+    },
+    {
+      "name": "AccessDenied",
+      "fields": [
+        { "name": "synid", "type": "publicKey", "index": true },
+        { "name": "requester", "type": "publicKey", "index": true },
+        { "name": "timestamp", "type": "i64", "index": false }
+      ]
+    },
+    {
+      "name": "AccessRevoked",
+      "fields": [
+        { "name": "synid", "type": "publicKey", "index": true },
+        { "name": "requester", "type": "publicKey", "index": true },
+        { "name": "timestamp", "type": "i64", "index": false }
+      ]
+    },
+    {
+      "name": "IdentityVerified",
+      "fields": [
+        { "name": "owner", "type": "publicKey", "index": true },
+        { "name": "timestamp", "type": "i64", "index": false }
+      ]
+    },
+    {
+      "name": "ReputationUpdated",
+      "fields": [
+        { "name": "owner", "type": "publicKey", "index": true },
+        { "name": "newScore", "type": "u16", "index": false },
+        { "name": "timestamp", "type": "i64", "index": false }
+      ]
+    },
+    {
+      "name": "SynidBurned",
+      "fields": [
+        { "name": "owner", "type": "publicKey", "index": true },
+        { "name": "tokenId", "type": "u64", "index": false },
+        { "name": "timestamp", "type": "i64", "index": false }
+      ]
+    }
+  ],
+  "errors": [
+    { "code": 6000, "name": "Unauthorized", "msg": "Unauthorized" },
+    { "code": 6001, "name": "AlreadyMinted", "msg": "Already minted" },
+    { "code": 6002, "name": "InvalidCid", "msg": "Invalid CID" },
+    { "code": 6003, "name": "NameTooLong", "msg": "Name too long" },
+    { "code": 6004, "name": "UriTooLong", "msg": "URI too long" },
+    { "code": 6005, "name": "CidTooLong", "msg": "CID too long" },
+    { "code": 6006, "name": "TooManyFields", "msg": "Too many fields" },
+    { "code": 6007, "name": "InsufficientPayment", "msg": "Insufficient payment" },
+    { "code": 6008, "name": "InvalidStatus", "msg": "Invalid status" },
+    { "code": 6009, "name": "RequestExpired", "msg": "Request expired" },
+    { "code": 6010, "name": "AlreadyRevoked", "msg": "Already revoked" },
+    { "code": 6011, "name": "Paused", "msg": "Program paused" }
+  ],
+  "metadata": {
+    "address": "SYNiD1111111111111111111111111111111111111"
+  }
+}
